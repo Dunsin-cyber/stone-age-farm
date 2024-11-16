@@ -13,11 +13,11 @@ function BoxMove() {
 
   return (
     <div className="w-full h-screen">
-      {isLoaded === false && (
+      {/* {isLoaded === false && (
         <div className="flex justify-center items-center top-[40vh]">
           <p>Loading... ({loadingPercentage}%)</p>
         </div>
-      )}
+      )} */}
       <Unity className="w-full h-full" unityProvider={unityProvider} />
     </div>
   );
