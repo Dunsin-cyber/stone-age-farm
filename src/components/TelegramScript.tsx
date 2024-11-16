@@ -6,11 +6,7 @@ import { useEffect } from "react";
 declare global {
   interface Window {
     Telegram: {
-      WebApp: {
-        ready: () => void;
-        expand: () => void;
-        // Add other properties/methods as needed
-      };
+      WebApp: any;
     };
   }
 }
