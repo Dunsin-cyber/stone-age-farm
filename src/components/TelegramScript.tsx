@@ -3,14 +3,6 @@
 
 import { useEffect } from "react";
 
-declare global {
-  interface Window {
-    Telegram: {
-      WebApp: any;
-    };
-  }
-}
-
 if (typeof window !== "undefined" && window.Telegram) {
   window.Telegram.WebApp.ready();
 }
