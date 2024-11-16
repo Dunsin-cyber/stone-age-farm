@@ -3,13 +3,13 @@ import React from "react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 
 function BoxMove() {
-  const { unityProvider, isLoaded, loadingProgression } = useUnityContext({
+  const { unityProvider /* isLoaded, loadingProgression */ } = useUnityContext({
     loaderUrl: "build/build.loader.js",
     dataUrl: "build/build.data",
     frameworkUrl: "build/build.framework.js",
     codeUrl: "build/build.wasm",
   });
-  const loadingPercentage = Math.round(loadingProgression * 100);
+  // const loadingPercentage = Math.round(loadingProgression * 100);
 
   return (
     <div className="w-full h-screen">
