@@ -45,7 +45,7 @@ function BoxMove() {
 
       {/* Unity Game */}
       <Unity
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "90%" }}
         unityProvider={unityProvider}
       />
 

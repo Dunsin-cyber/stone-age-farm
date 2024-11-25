@@ -13,7 +13,7 @@ export default function Home() {
 
 
   setTimeout(() => {
-    redirect("/explore")
+    redirect("explore")
   }, 4000)
 
 
@@ -21,7 +21,7 @@ export default function Home() {
   // }, [])
   return (
     <div className=" items-center justify-items-center min-h-screen font-[family-name:var(--font-geist-sans)]">
-      <Image src ={"/flash-screen.jpg"}  fill="true" alt="flash-screen"/>
+      <Image src ={"/flash-screen.jpg"}  fill={true} alt="flash-screen"/>
       <Spinner size="lg" />
     </div>
   );

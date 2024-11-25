@@ -1,19 +1,16 @@
 "use client";
 import React, { useEffect } from "react";
 import { FaTasks } from "react-icons/fa";
-import { TracingBeam } from "@/components/ui/tracing-beam";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 import { useClient } from "@/context";
-import toast from "react-hot-toast";
-import { useAppSelector } from "@/redux/hook";
 import { msToDaysLeft } from "@/lib/DaysLeft";
 
 export interface Campaign {
   campaign_id: number;
   creator: string; // Equivalent to `AccountId` in Rust
   total_contributions: number; // Equivalent to `u64`
-  contributions: Contribution[]; // Equivalent to `Vec<Contribution>`
+  contributions: any; // Equivalent to `Vec<Contribution>`
   crowdfunding_end_time: number; // Equivalent to `U64`
   claimed: boolean;
   amount_required: number; // Equivalent to `u64`
@@ -203,9 +200,9 @@ export const CampaignCard = ({ campaign }) => {
         />
         <div className="flex flex-col">
           <h3 className="text-white text-lg font-semibold">{campaign.title}</h3>
-          <span className="text-green-400 text-sm">
+          {/* <span className="text-green-400 text-sm">
             {msToDaysLeft(campaign.crowdfunding_end_time)} days left
-          </span>
+          </span> */}
         </div>
       </div>
 
@@ -227,14 +224,14 @@ export const CampaignCard = ({ campaign }) => {
           <div className="text-blue-400 text-xl font-bold">
             {campaign.contributions.length}
           </div>
-          <div className="text-gray-400 text-sm">Donors</div>
+          <div className="text-gray-400 text-sm">Participants</div>
         </div>
 
         <div className="flex flex-col items-center">
           <div className="text-blue-400 text-xl font-bold">
             {campaign.amount_required.toLocaleString()}
           </div>
-          <div className="text-gray-400 text-sm">NEAR</div>
+          <div className="text-gray-400 text-sm">TON</div>
         </div>
 
         <div className="flex flex-col items-center">

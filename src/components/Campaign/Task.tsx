@@ -9,6 +9,9 @@ import { FaCheckCircle } from "react-icons/fa";
 // import { useGetUser, useInitializeContract, useIsUserExist } from "@/functions";
 import { FaHotjar } from "react-icons/fa";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
+import {useRouter} from "next/navigation"
+import { Spinner } from "@chakra-ui/react"
+
 
 function Campaigns() {
   // const { signedAccountId } = useContext(NearContext);
@@ -25,9 +28,14 @@ function Campaigns() {
   //   getUser();
   // }, [signedAccountId]);
 
+  const [clicked, setClicked] = React.useState(false)
+
+  const router = useRouter();
+
   const toll = 2;
 
   return (
+
     <div>
       {toll < 1 ? (
         <HotNews />
@@ -43,16 +51,11 @@ function Campaigns() {
             <div className="space-y-6 mt-2">
               {/* task */}
               <div
-                // onClick={() => {
-                //   if (signedAccountId) return;
-                //   setConnectWallet(true);
-                // }}
                 className="rounded-lg border border-blue-800 border-5 flex justify-between items-center py-3 px-5"
               >
                 <CiFlag1 color="white" />
                 <div>
-                  <p className="font-bold text-sm">Connect Email</p>
-                  <p className="text-xs">or connect with your wallet</p>
+               <div id="ton-connect">connect</div>
                 </div>
                 {toll < 1 ? (
                   <FaCheckCircle size={"30px"} color="green" />
@@ -62,41 +65,25 @@ function Campaigns() {
               </div>
               {/* set up your profile */}
               <div
-                // onClick={() => {
-                //   if (user) return;
-
-                //   setIsCreateProfile(true);
-                // }}
+                onClick={() => {
+                 router.push("/game")
+                 setClicked(true)
+                }}
                 className="rounded-lg border border-blue-800 border-5 flex justify-between items-center py-3 px-5"
               >
                 <CiFlag1 color="white" />
                 <div>
-                  <p className="font-bold text-sm">Add a username</p>
-                  <p className="text-xs">and a short bio</p>
+                  <p className="font-bold text-sm">Travel to StoneAge</p>
+                  <p className="text-xs">play the game now!</p>
                 </div>
 
-                {toll < 1 ? (
-                  <FaCheckCircle size={"30px"} color="green" />
+                {clicked ? (
+                     <Spinner size="lg" />
                 ) : (
                   <h1 className="bg-white text-black rounded-full px-2"> Go</h1>
                 )}
               </div>
-              <div
-                // onClick={() => setIsCreateCampOpen(true)}
-                className="rounded-lg border border-blue-800 border-5 flex justify-between items-center py-3 px-5"
-              >
-                <CiFlag1 color="white" />
-                <div>
-                  <p className="font-bold text-sm">Create a Campaign</p>
-                  <p className="text-xs">or fund a campaign</p>
-                </div>
-
-                {toll < 1? (
-                  <FaCheckCircle size={"30px"} color="green" />
-                ) : (
-                  <h1 className="bg-white text-black rounded-full px-2"> Go</h1>
-                )}
-              </div>
+  
             </div>
           </div>
         </div>

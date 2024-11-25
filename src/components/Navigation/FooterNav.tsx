@@ -11,6 +11,7 @@ const FooterNav = () => {
 
   const navItems = [
     { id: "/explore", label: "Home", icon: <AiFillHome /> },
+    { id: "/game", label: "Game", icon: <AiFillCrown /> },
     { id: "/profile", label: "Profile", icon: <AiFillStar /> },
   ];
 

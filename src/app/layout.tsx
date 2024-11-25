@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 import TelegramScript from "@/components/TelegramScript";
 import { Provider } from "@/components/ui/provider";
-
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "StoneAge Farm",
   description: "A Web3 farming game set in the Stone Age",
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -15,46 +16,40 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="dark">
-       <Provider>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.openPaymentPageInApp = function(paymentUrl) {
-                // Handle opening the payment page in the iframe or popup
-                const iframe = document.createElement("iframe");
-                iframe.src = paymentUrl;
-                iframe.style.width = "100%";
-                iframe.style.height = "500px";
-                iframe.frameBorder = "0";
-                document.body.appendChild(iframe);
+      <Provider>
+        <head>
+          {/* Load TON Connect UI Library */}
+          <Script
+            src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"
+            strategy="beforeInteractive"
+          />
+          {/* Inline TON Connect UI Initialization */}
+          <Script id="tonconnect-ui-init" strategy="afterInteractive">
+            {`
+              const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: "https://stone-age-farm.vercel.app/tonconnect-manifest.json",
+                buttonRootId: "ton-connect"
+              });
 
-                // Optionally handle events like success or failure
-                // window.addEventListener("message", function (event) {
-                //   if (event.origin !== window.location.origin) {
-                //     return;
-                //   }
+              async function connectToWallet() {
+                const connectedWallet = await tonConnectUI.connectWallet();
+                // Do something with connectedWallet if needed
+                console.log(connectedWallet);
+              }
 
-                //   });
-                };
-                  `,
-          }}
-        />
-      </head>
-      <body>
-        {/* Load Telegram WebApp Script */}
-        <TelegramScript />
-        {children}
-      </body>
-       </Provider>
+              // Call the function
+              connectToWallet().catch(error => {
+                console.error("Error connecting to wallet:", error);
+              });
+            `}
+          </Script>
+        </head>
+        <body>
+          {/* Load Telegram WebApp Script */}
+          <TelegramScript />
+          {children}
+        </body>
+      </Provider>
     </html>
   );
 }
-
-// // Handle payment status message (e.g., success or failure)
-// const paymentStatus = event.data;
-// if (paymentStatus === "success") {
-//   alert("Payment was successful!");
-// } else {
-//   alert("Payment failed.");
-// }

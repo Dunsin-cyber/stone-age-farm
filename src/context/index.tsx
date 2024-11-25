@@ -35,7 +35,7 @@ const UserContext = React.createContext<{
   closeDrawer: any;
   drawerIsOpen: boolean;
   setDrawerIsOpen: any;
-  passDrawerParams: (data: DrawerParam) => {} | any;
+  passDrawerParams: any;
   isCreateCampOpen: any;
   setIsCreateCampOpen: any;
   isCampDetailOpen: any;
