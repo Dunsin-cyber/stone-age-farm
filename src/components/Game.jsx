@@ -2,6 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 import PaymentHandler from "./PaymentHandler";
+import {
+  ProgressBar,
+  ProgressRoot,
+  ProgressValueText,
+} from "@/components/ui/progress";
 
 function BoxMove() {
   const { unityProvider, isLoaded, loadingProgression } = useUnityContext({
@@ -38,8 +43,12 @@ function BoxMove() {
   return (
     <div className=" w-full h-screen">
       {isLoaded === false && (
-        <div className="flex justify-center items-center top-[40vh]">
-          <p>Loading... ({loadingPercentage}%)</p>
+        <div className="flex flex-col justify-center space-y-6 items-center top-[40vh]">
+          <div>initial load might take a while...</div>
+          <ProgressRoot defaultValue={loadingPercentage} w={"200px"}>
+            <ProgressBar />
+            <ProgressValueText>{loadingPercentage}%</ProgressValueText>
+          </ProgressRoot>
         </div>
       )}
 
