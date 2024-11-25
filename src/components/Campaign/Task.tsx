@@ -36,7 +36,7 @@ function Campaigns() {
     script.async = true;
     script.onload = () => {
       if (typeof window !== "undefined" && window.Telegram) {
-     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+     const tonConnectUI = new window.TON_CONNECT_UI.TonConnectUI({
                 manifestUrl: "https://stone-age-farm.vercel.app/tonconnect-manifest.json",
                 buttonRootId: "ton-connect"
               });
@@ -54,7 +54,7 @@ function Campaigns() {
 
 
    async function connectToWallet() {
-       const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+       const tonConnectUI = new window.TON_CONNECT_UI.TonConnectUI({
                 manifestUrl: "https://stone-age-farm.vercel.app/tonconnect-manifest.json",
                 buttonRootId: "ton-connect"
               });
