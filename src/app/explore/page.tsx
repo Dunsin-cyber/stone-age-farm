@@ -19,7 +19,7 @@ function Index() {
   return (
     <Background>
       <div className="flex flex-col space-y-10">
-        <Header />
+        {/* <Header /> */}
         <Task />
         <Campaigns />
       </div>

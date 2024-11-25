@@ -12,7 +12,7 @@ const FooterNav = () => {
   const navItems = [
     { id: "/explore", label: "Home", icon: <AiFillHome /> },
     { id: "/game", label: "Game", icon: <AiFillCrown /> },
-    { id: "/profile", label: "Profile", icon: <AiFillStar /> },
+    // { id: "/profile", label: "Profile", icon: <AiFillStar /> },
   ];
 
   // Add a fallback if the router isn't ready

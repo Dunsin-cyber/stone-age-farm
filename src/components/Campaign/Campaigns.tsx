@@ -98,7 +98,7 @@ const campaigns: Campaign[] = [
     title: "Tame the Woolly Mammoth",
     description: "Support efforts to tame a woolly mammoth to help with heavy lifting and transportation.",
      images: "",
-    campaign_code: "MAMMOTH006"
+    campaign_code: "MAMM6"
   }
 ];
 
@@ -130,7 +130,7 @@ function Campaigns() {
         <span>
           <FaTasks color="blue" />
         </span>
-        <span>Campaigns</span>
+        <span>Campaigns - Upcoming Feature</span>
       </h2>
       {/* campaigns */}
       <div>

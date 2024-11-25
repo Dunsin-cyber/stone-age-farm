@@ -55,7 +55,7 @@ function Campaigns() {
               >
                 <CiFlag1 color="white" />
                 <div>
-               <div id="ton-connect">connect</div>
+               <div id="ton-connect"></div>
                 </div>
                 {toll < 1 ? (
                   <FaCheckCircle size={"30px"} color="green" />
