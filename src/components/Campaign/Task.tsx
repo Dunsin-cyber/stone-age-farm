@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { FaTasks } from "react-icons/fa";
 import { CiFlag1 } from "react-icons/ci";
 // import { useClient } from "@/context";
@@ -28,6 +28,50 @@ function Campaigns() {
   //   getUser();
   // }, [signedAccountId]);
 
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"
+    
+    script.async = true;
+    script.onload = () => {
+      if (typeof window !== "undefined" && window.Telegram) {
+     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: "https://stone-age-farm.vercel.app/tonconnect-manifest.json",
+                buttonRootId: "ton-connect"
+              });
+      }
+    };
+    document.head.appendChild(script);
+
+    // Cleanup script on unmount
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
+
+
+
+   async function connectToWallet() {
+       const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: "https://stone-age-farm.vercel.app/tonconnect-manifest.json",
+                buttonRootId: "ton-connect"
+              });
+
+        const connectedWallet = await tonConnectUI.connectWallet();
+        // Do something with connectedWallet if needed
+        console.log(connectedWallet);
+    }
+
+    const handleConnect = async() => {
+
+      // Call the function
+     await connectToWallet().catch(error => {
+        console.error("Error connecting to wallet:", error);
+      });
+    }
+
   const [clicked, setClicked] = React.useState(false)
 
   const router = useRouter();
@@ -41,6 +85,10 @@ function Campaigns() {
         <HotNews />
       ) : (
         <div className="my-2 px-3">
+          {/* <script       
+                src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"
+>
+            </script> */}
           <h2 className="relative flex-row z-10 text-2xl md:text-5xl md:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium bg-clip-text text-transparent bg-gradient-to-b from-neutral-800 via-white to-white flex items-center gap-2 md:gap-8">
             <span className="mt-1">
               <FaTasks color="blue" />
@@ -52,10 +100,11 @@ function Campaigns() {
               {/* task */}
               <div
                 className="rounded-lg border border-blue-800 border-5 flex justify-between items-center py-3 px-5"
+                onClick={() => handleConnect()}
               >
                 <CiFlag1 color="white" />
                 <div>
-               <div id="ton-connect"></div>
+               <div id="ton-connect" ></div>
                 </div>
                 {toll < 1 ? (
                   <FaCheckCircle size={"30px"} color="green" />
