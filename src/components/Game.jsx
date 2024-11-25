@@ -43,9 +43,9 @@ function BoxMove() {
   return (
     <div className=" w-full h-screen">
       {isLoaded === false && (
-        <div className="flex flex-col justify-center space-y-6 items-center top-[40vh]">
+        <div className="flex flex-col justify-center space-y-6 items-center pt-[40vh]">
           <div>initial load might take a while...</div>
-          <ProgressRoot defaultValue={loadingPercentage} w={"200px"}>
+          <ProgressRoot value={loadingPercentage} w={"200px"}>
             <ProgressBar />
             <ProgressValueText>{loadingPercentage}%</ProgressValueText>
           </ProgressRoot>
