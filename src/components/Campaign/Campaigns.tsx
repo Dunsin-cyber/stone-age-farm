@@ -1,33 +1,121 @@
+"use client";
 import React, { useEffect } from "react";
 import { FaTasks } from "react-icons/fa";
 import { TracingBeam } from "@/components/ui/tracing-beam";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 import { useClient } from "@/context";
-import { NearContext } from "@/wallets/near";
-import { FusionFundContract } from "@/config";
 import toast from "react-hot-toast";
 import { useAppSelector } from "@/redux/hook";
-import { Campaign } from "@/redux/types";
 import { msToDaysLeft } from "@/lib/DaysLeft";
+
+export interface Campaign {
+  campaign_id: number;
+  creator: string; // Equivalent to `AccountId` in Rust
+  total_contributions: number; // Equivalent to `u64`
+  contributions: Contribution[]; // Equivalent to `Vec<Contribution>`
+  crowdfunding_end_time: number; // Equivalent to `U64`
+  claimed: boolean;
+  amount_required: number; // Equivalent to `u64`
+  title: string;
+  description: string;
+  images: string;
+  campaign_code: string;
+}
+
+// Example campaigns:
+const campaigns: Campaign[] = [
+  {
+    campaign_id: 1,
+    creator: "StoneFarmer001",
+    total_contributions: 2300,
+    contributions: [], // Populate with actual Contribution data
+    crowdfunding_end_time: 1700841617, // Example timestamp
+    claimed: false,
+    amount_required: 5000,
+    title: "Expand the Village Farming Lands",
+    description: "Help us clear the forest and expand our farming lands to grow more food for the tribe!",
+    images: "",
+    campaign_code: "FARM001"
+  },
+  {
+    campaign_id: 2,
+    creator: "HunterGathr",
+    total_contributions: 1500,
+    contributions: [], // Populate with actual Contribution data
+    crowdfunding_end_time: 1700941617, // Example timestamp
+    claimed: false,
+    amount_required: 3000,
+    title: "Forge New Stone Weapons",
+    description: "Contribute to crafting new stone weapons to defend against wild beasts and rival tribes.",
+   images: "",
+    campaign_code: "WEAP002"
+  },
+  {
+    campaign_id: 3,
+    creator: "FireKeeper",
+    total_contributions: 4000,
+    contributions: [], // Populate with actual Contribution data
+    crowdfunding_end_time: 1701041617, // Example timestamp
+    claimed: false,
+    amount_required: 7000,
+    title: "Discover Fire-Making Techniques",
+    description: "Support our quest to master fire-making for warmth, cooking, and protection at night.",
+     images: "",
+    campaign_code: "FIRE003"
+  },
+  {
+    campaign_id: 4,
+    creator: "TribalCrafts",
+    total_contributions: 800,
+    contributions: [], // Populate with actual Contribution data
+    crowdfunding_end_time: 1701141617, // Example timestamp
+    claimed: false,
+    amount_required: 2000,
+    title: "Build Stone Age Pottery Workshop",
+    description: "Help us establish a pottery workshop to store grains, water, and other essentials.",
+     images: "",
+    campaign_code: "POT004"
+  },
+  {
+    campaign_id: 5,
+    creator: "TrailBlazer",
+    total_contributions: 2500,
+    contributions: [], // Populate with actual Contribution data
+    crowdfunding_end_time: 1701241617, // Example timestamp
+    claimed: false,
+    amount_required: 6000,
+    title: "Explore the Hidden Valley",
+    description: "Fund an expedition to the hidden valley rumored to have fertile lands and rare resources.",
+     images: "",
+    campaign_code: "VALLEY005"
+  },
+  {
+    campaign_id: 6,
+    creator: "AnimalTamer",
+    total_contributions: 1900,
+    contributions: [], // Populate with actual Contribution data
+    crowdfunding_end_time: 1701341617, // Example timestamp
+    claimed: false,
+    amount_required: 4000,
+    title: "Tame the Woolly Mammoth",
+    description: "Support efforts to tame a woolly mammoth to help with heavy lifting and transportation.",
+     images: "",
+    campaign_code: "MAMMOTH006"
+  }
+];
 
 function Campaigns() {
   const [active, setActive] = React.useState(true);
-  const { wallet, signedAccountId } = React.useContext(NearContext);
-  const campaigns = useAppSelector((state) => state.campaigns);
+  // const { wallet, signedAccountId } = React.useContext(NearContext);
+  // const campaigns = useAppSelector((state) => state.campaigns);
 
   const pics = [
-    "/donation-1.png",
-    "/donation-2.jpg",
-    "/donation-3.jpg",
-    "/donation-4.jpg",
-    // "donation-5.jpg",
-    // "donation-6.jpg",
-    // "donation-7.jpg",
-    // "donation-8.jpg",
-    // "donation-9.jpg",
-    // "donation-10.jpg",
-    // "donation-11.jpg",
+    "/stoneage-1.jpeg",
+    "/stoneage-2.jpeg",
+    "/stoneage-3.jpeg",
+    "/stoneage-4.jpeg",
+    "/stoneage-5.jpeg",
   ];
 
   const getRandomImage = () => {

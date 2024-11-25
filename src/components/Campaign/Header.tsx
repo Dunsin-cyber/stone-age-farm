@@ -56,7 +56,7 @@ export function Header() {
   return (
     <div className="h-[7rem] flex flex-col justify-center  items-center px-4">
       <h2 className="mb-10 sm:mb-20 text-md font-bold text-center sm:text-5xl text-white ">
-        Ask FusionFund Anything
+        Ask StoneAge Anything
       </h2>
       <PlaceholdersAndVanishInput
         placeholders={placeholders}

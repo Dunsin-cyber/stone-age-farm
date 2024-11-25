@@ -1,5 +1,6 @@
+"use client";
 import React, { useContext, useEffect, useState } from "react";
-import { useRouter } from "next/router";
+
 
 interface DrawerParam {
   title: string;
@@ -79,8 +80,7 @@ const UserContext = React.createContext<{
 });
 
 export const useUserContext = () => {
-  const router = useRouter();
-  const pathname = router.pathname;
+
 
   const [drawerTitle, setDrawerTitle] = useState("");
   const [drawerBody, setDrawerBody] = useState("");

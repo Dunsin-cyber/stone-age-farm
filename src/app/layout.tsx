@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import TelegramScript from "@/components/TelegramScript";
+import { Provider } from "@/components/ui/provider";
+
 
 export const metadata: Metadata = {
   title: "StoneAge Farm",
@@ -13,6 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="dark">
+       <Provider>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -43,6 +46,7 @@ export default function RootLayout({
         <TelegramScript />
         {children}
       </body>
+       </Provider>
     </html>
   );
 }

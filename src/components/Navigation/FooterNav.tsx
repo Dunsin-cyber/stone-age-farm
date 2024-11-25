@@ -10,9 +10,7 @@ const FooterNav = () => {
   const [active, setActive] = useState("home");
 
   const navItems = [
-    { id: "/campaigns", label: "Home", icon: <AiFillHome /> },
-    { id: "/p2p", label: "P2P", icon: <GiBodySwapping /> },
-    { id: "/loans", label: "My Loans", icon: <AiFillCrown /> },
+    { id: "/explore", label: "Home", icon: <AiFillHome /> },
     { id: "/profile", label: "Profile", icon: <AiFillStar /> },
   ];
 
