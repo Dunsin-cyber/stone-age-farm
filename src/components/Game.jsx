@@ -36,7 +36,7 @@ function BoxMove() {
   };
 
   return (
-    <div className="relative w-full h-screen">
+    <div className=" w-full h-screen">
       {isLoaded === false && (
         <div className="flex justify-center items-center top-[40vh]">
           <p>Loading... ({loadingPercentage}%)</p>
@@ -45,7 +45,7 @@ function BoxMove() {
 
       {/* Unity Game */}
       <Unity
-        style={{ width: "100%", height: "85%" }}
+        style={{ width: "100%", height: "90%" }}
         unityProvider={unityProvider}
       />
 
