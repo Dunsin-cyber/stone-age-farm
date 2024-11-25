@@ -51,7 +51,7 @@ function BoxMove() {
 
       {/* PaymentHandler Overlay */}
       {showPaymentHandler && (
-        <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div className="absolute top-0 left-0 w-full h-[90%] bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <PaymentHandler paymentUrl={paymentUrl} onClose={closePaymentPage} />
         </div>
       )}
