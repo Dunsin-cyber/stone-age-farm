@@ -5,6 +5,12 @@
 			"aliases": {
 				"testing": "0000000000000007"
 			}
+		},
+		"StoneAge": {
+			"source": "cadence/contracts/StoneAge.cdc",
+			"aliases": {
+				"testing": "00007"
+			}
 		}
 	},
 	"networks": {
