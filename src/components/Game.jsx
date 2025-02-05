@@ -11,17 +11,20 @@ import {
 // FCL Configuration
 fcl.config({
   "flow.network": "emulator",
+  "app.detail.title": "Stone Age Farm",
+  "app.detail.icon": "https://stone-age-farm.vercel.app/rsz_stone-age-logo.png",
   "accessNode.api": "http://localhost:8888",
   "discovery.wallet": "http://localhost:8701/fcl/authn", // Local Dev Wallet
 });
 
 function BoxMove() {
-  const { unityProvider, isLoaded, loadingProgression, sendMessage } = useUnityContext({
-    loaderUrl: "build/build.loader.js",
-    dataUrl: "build/build.data",
-    frameworkUrl: "build/build.framework.js",
-    codeUrl: "build/build.wasm",
-  });
+  const { unityProvider, isLoaded, loadingProgression, sendMessage } =
+    useUnityContext({
+      loaderUrl: "build/build.loader.js",
+      dataUrl: "build/build.data",
+      frameworkUrl: "build/build.framework.js",
+      codeUrl: "build/build.wasm",
+    });
 
   const [loadingPercentage, setLoadingPercentage] = useState(0);
 
@@ -33,7 +36,7 @@ function BoxMove() {
   useEffect(() => {
     if (isLoaded) {
       console.log("Unity Loaded - Registering createAccount");
-      
+
       window.createAccount = async () => {
         try {
           const transactionId = await fcl.mutate({
@@ -61,20 +64,19 @@ function BoxMove() {
             authorizations: [fcl.authz],
             limit: 100,
           });
-
+          const currentUser = await fcl.currentUser.snapshot();
           console.log("Transaction ID:", transactionId);
 
           // ✅ Use Unity's `sendMessage` to notify game
-          sendMessage("BlockchainConnector", "OnTransactionSuccess", "Account created successfully");
+          sendMessage("Flow", "OnCreateAccountSuccessful", currentUser.addr);
         } catch (error) {
           console.error("Transaction Error:", error);
 
-          sendMessage("BlockchainConnector", "OnTransactionFailure", error.message);
+          sendMessage("Flow", "OnTransactionFailure", error.message);
         }
       };
 
-
-      window.mintPlot = async (seed, stage) => {
+      window.mintPlot = async () => {
         try {
           const transactionId = await fcl.mutate({
             cadence: `
@@ -100,25 +102,24 @@ function BoxMove() {
                       }
                   }
                   `,
-            args: (arg, t) => [arg(seed, t.String), arg(stage, t.String)],
+            args: (arg, t) => [arg("1", t.String), arg("1", t.String)],
             proposer: fcl.authz,
             payer: fcl.authz,
             authorizations: [fcl.authz],
             limit: 100,
           });
-      
+
           console.log("Transaction ID:", transactionId);
-          SendMessage(
-            "BlockchainConnector",
+          sendMessage(
+            "Flow",
             "OnTransactionSuccess",
             "Plot minted successfully"
           );
         } catch (error) {
           console.error("Transaction Error:", error);
-          SendMessage("BlockchainConnector", "OnTransactionFailure", error.message);
+          sendMessage("Flow", "OnTransactionFailure", error.message);
         }
       };
-
 
       window.transferPlot = async (plotID, recipient) => {
         try {
@@ -165,26 +166,101 @@ function BoxMove() {
                       }
                   }
                   `,
-            args: (arg, t) => [arg(plotID, t.UInt64), arg(recipient, t.Address)],
+            args: (arg, t) => [
+              arg(plotID, t.UInt64),
+              arg(recipient, t.Address),
+            ],
             proposer: fcl.authz,
             payer: fcl.authz,
             authorizations: [fcl.authz],
             limit: 100,
           });
-      
+
           console.log("Transaction ID:", transactionId);
-          SendMessage(
-            "BlockchainConnector",
+          sendMessage(
+            "Flow",
             "OnTransactionSuccess",
             "Plot transferred successfully"
           );
         } catch (error) {
           console.error("Transaction Error:", error);
-          SendMessage("BlockchainConnector", "OnTransactionFailure", error.message);
+          sendMessage("Flow", "OnTransactionFailure", error.message);
         }
-      }
+      };
 
+      window.getUserAccount = async (address) => {
+        try {
+          const result = await fcl.query({
+            cadence: `
+         import StoneAge from 0x179b6b1cb6755e31
 
+          access(all) fun main(address: Address): &StoneAge.FarmDetail {
+            let account = getAccount(address)
+
+            let nftReference = account
+              .capabilities
+              .borrow<&StoneAge.FarmDetail>(/public/AccountNFTPath)
+              ?? panic("Could not borrow a reference")  // Corrected string literal
+
+            return nftReference
+          }
+
+          `,
+            args: (arg, t) => [arg(address, t.Address)],
+          });
+
+          // ✅ Use Unity's `sendMessage` to notify game
+          const param = {
+            balance: result.balance,
+            id: result.id,
+            uuid: result.uuid,
+          };
+          sendMessage("Flow", "OnAccountData", param);
+          console.log(result);
+        } catch (error) {
+          console.error("Transaction Error:", error);
+
+          sendMessage("Flow", "OnTransactionFailure", error.message);
+        }
+      };
+
+      window.getMyCollection = async () => {
+        try {
+          const result = await fcl.query({
+            cadence: `
+
+              import StoneAge from 0x179b6b1cb6755e31
+
+              access(all) fun main(address: Address): &StoneAge.PlotCollection {
+                let account = getAccount(address)
+
+                let collection = account
+                  .capabilities
+                  .borrow<&StoneAge.PlotCollection>(StoneAge.CollectionPublicPath)
+                  ?? panic("Could not borrow a reference")
+
+                  return collection
+              }
+
+          `,
+            args: (arg, t) => [arg("0xf8d6e0586b0a20c7", t.Address)],
+          });
+
+          // ✅ Use Unity's `sendMessage` to notify game
+          console.log(result.ownedPlots);
+          const param = {
+            // balance: result.balance,
+            // id: result.id,
+            // count: result.ownedPlots.length
+            uuid: result.uuid,
+          };
+          sendMessage("Flow", "OnAccountData", param);
+        } catch (error) {
+          console.error("Transaction Error:", error);
+
+          sendMessage("Flow", "OnTransactionFailure", error.message);
+        }
+      };
     }
   }, [isLoaded, sendMessage]);
 
