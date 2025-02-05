@@ -9,7 +9,7 @@
 		"StoneAge": {
 			"source": "cadence/contracts/StoneAge.cdc",
 			"aliases": {
-				"testing": "00007"
+				"testing": "0000000000000007"
 			}
 		}
 	},
@@ -20,12 +20,23 @@
 		"testnet": "access.devnet.nodes.onflow.org:9000"
 	},
 	"accounts": {
+		"dunsin": {
+			"address": "179b6b1cb6755e31",
+			"key": "0405233caef69665435ea60b0c93744e3c732f1a00cb70f266174b8a66fa542f"
+		},
 		"emulator-account": {
 			"address": "f8d6e0586b0a20c7",
 			"key": {
 				"type": "file",
 				"location": "emulator-account.pkey"
 			}
+		}
+	},
+	"deployments": {
+		"emulator": {
+			"dunsin": [
+				"StoneAge"
+			]
 		}
 	}
 }
