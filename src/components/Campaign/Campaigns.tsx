@@ -29,7 +29,7 @@ const campaigns: Campaign[] = [
     contributions: [], // Populate with actual Contribution data
     crowdfunding_end_time: 1700841617, // Example timestamp
     claimed: false,
-    amount_required: 5000,
+    amount_required: 500,
     title: "Expand the Village Farming Lands",
     description: "Help us clear the forest and expand our farming lands to grow more food for the tribe!",
     images: "",
@@ -68,7 +68,7 @@ const campaigns: Campaign[] = [
     contributions: [], // Populate with actual Contribution data
     crowdfunding_end_time: 1701141617, // Example timestamp
     claimed: false,
-    amount_required: 2000,
+    amount_required: 500,
     title: "Build Stone Age Pottery Workshop",
     description: "Help us establish a pottery workshop to store grains, water, and other essentials.",
      images: "",
@@ -81,7 +81,7 @@ const campaigns: Campaign[] = [
     contributions: [], // Populate with actual Contribution data
     crowdfunding_end_time: 1701241617, // Example timestamp
     claimed: false,
-    amount_required: 6000,
+    amount_required: 500,
     title: "Explore the Hidden Valley",
     description: "Fund an expedition to the hidden valley rumored to have fertile lands and rare resources.",
      images: "",
@@ -94,7 +94,7 @@ const campaigns: Campaign[] = [
     contributions: [], // Populate with actual Contribution data
     crowdfunding_end_time: 1701341617, // Example timestamp
     claimed: false,
-    amount_required: 4000,
+    amount_required: 500,
     title: "Tame the Woolly Mammoth",
     description: "Support efforts to tame a woolly mammoth to help with heavy lifting and transportation.",
      images: "",
@@ -130,7 +130,7 @@ function Campaigns() {
         <span>
           <FaTasks color="blue" />
         </span>
-        <span>Campaigns - Upcoming Feature</span>
+        <span>Sell Lands - Upcoming Feature</span>
       </h2>
       {/* campaigns */}
       <div>
@@ -231,7 +231,7 @@ export const CampaignCard = ({ campaign }) => {
           <div className="text-blue-400 text-xl font-bold">
             {campaign.amount_required.toLocaleString()}
           </div>
-          <div className="text-gray-400 text-sm">TON</div>
+          <div className="text-gray-400 text-sm">STN</div>
         </div>
 
         <div className="flex flex-col items-center">

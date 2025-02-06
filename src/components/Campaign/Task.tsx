@@ -15,10 +15,15 @@ import * as fcl from "@onflow/fcl";
 
 // FCL Configuration
 fcl.config({
-  "flow.network": "emulator",
-  "accessNode.api": "http://localhost:8888",
-  "discovery.wallet": "http://localhost:8701/fcl/authn", // Local Dev Wallet
+  "flow.network": "testnet",
+  "app.detail.title": "Stone Age Farm",
+  "accessNode.api": "https://rest-testnet.onflow.org",
+  "discovery.wallet": "https://fcl-discovery.onflow.org/testnet/authn",
+  "app.detail.icon": "https://stone-age-farm.vercel.app/rsz_stone-age-logo.png",
+  // "accessNode.api": "http://localhost:8888",
+  // "discovery.wallet": "http://localhost:8701/fcl/authn", // Local Dev Wallet
 });
+
 
 function Campaigns() { 
   const [clicked, setClicked] = React.useState(false)
@@ -27,12 +32,19 @@ function Campaigns() {
 
   const router = useRouter();
 
-    const logIn = () => {
-    fcl.authenticate();
+    const Auth = () => {
+      if(user.loggedIn) {
+           fcl.unauthenticate();
+      } else {
+        fcl.authenticate();
+      }
   };
 
   const toll = 2;
 
+useEffect(() => {
+    fcl.currentUser.subscribe(setUser);
+  }, []);
   return (
 
     <div>
@@ -55,11 +67,11 @@ function Campaigns() {
               {/* task */}
               <div
                 className="rounded-lg border border-blue-800 border-5 flex justify-between items-center py-3 px-5"
-                onClick={() => logIn()}
+                onClick={() => Auth()}
               >
                 <CiFlag1 color="white" />
                 <div>
-               <div id="" >connect wallet</div>
+               <div id="" >{user.loggedIn ? "Disconnect Wallet" :"connect wallet"}</div>
                 </div>
                 {toll < 1 ? (
                   <FaCheckCircle size={"30px"} color="green" />

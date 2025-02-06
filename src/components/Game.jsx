@@ -7,15 +7,20 @@ import {
   ProgressRoot,
   ProgressValueText,
 } from "@/components/ui/progress";
+// import flowJSON from "../../flow.json"
 
 // FCL Configuration
-fcl.config({
-  "flow.network": "emulator",
-  "app.detail.title": "Stone Age Farm",
-  "app.detail.icon": "https://stone-age-farm.vercel.app/rsz_stone-age-logo.png",
-  "accessNode.api": "http://localhost:8888",
-  "discovery.wallet": "http://localhost:8701/fcl/authn", // Local Dev Wallet
-});
+fcl
+  .config({
+    "flow.network": "testnet",
+    "app.detail.title": "Stone Age Farm",
+    "accessNode.api": "https://rest-testnet.onflow.org",
+    "discovery.wallet": "https://fcl-discovery.onflow.org/testnet/authn",
+    "app.detail.icon":
+      "https://stone-age-farm.vercel.app/rsz_stone-age-logo.png",
+    // "accessNode.api": "http://localhost:8888",
+    // "discovery.wallet": "http://localhost:8701/fcl/authn", // Local Dev Wallet
+  })
 
 function BoxMove() {
   const { unityProvider, isLoaded, loadingProgression, sendMessage } =
@@ -39,9 +44,10 @@ function BoxMove() {
 
       window.createAccount = async () => {
         try {
+          console.log("createAcc was called")
           const transactionId = await fcl.mutate({
             cadence: `
-            import StoneAge from 0x179b6b1cb6755e31
+            import StoneAge from 0x9870d6da0661d8cf
             transaction {
               prepare(acct: auth(BorrowValue, SaveValue, IssueStorageCapabilityController, PublishCapability) &Account) {
                 if acct.storage.borrow<&StoneAge.FarmDetail>(from: StoneAge.AccStoragePath) != nil {
@@ -68,11 +74,26 @@ function BoxMove() {
           console.log("Transaction ID:", transactionId);
 
           // ✅ Use Unity's `sendMessage` to notify game
-          sendMessage("Flow", "OnCreateAccountSuccessful", currentUser.addr);
+          // sendMessage("Flow", "OnCreateAccountSuccessful", currentUser.addr);
+          if (window.unityInstance) { 
+          window.unityInstance.SendMessage("Flow", "OnCreateAccountSuccessful", currentUser.addr);
+          }
+           else {
+    console.error("Unity instance not found!");
+}
         } catch (error) {
+            if (window.unityInstance) { 
           console.error("Transaction Error:", error);
-
-          sendMessage("Flow", "OnTransactionFailure", error.message);
+                     window.unityInstance.SendMessage(
+                       "Flow",
+                       "OnTransactionFailure",
+                       error.message
+                     );
+                    }
+ else {
+    console.error("Unity instance not found!");
+}
+          // sendMessage("Flow", "OnTransactionFailure", error.message);
         }
       };
 
@@ -80,7 +101,7 @@ function BoxMove() {
         try {
           const transactionId = await fcl.mutate({
             cadence: `
-                  import StoneAge from 0x179b6b1cb6755e31
+                  import StoneAge from 0x9870d6da0661d8cf
                   transaction(seed: String, stage: String) {
                       let signerRef: &StoneAge.PlotCollection
                       let signerAccRef: &StoneAge.FarmDetail
@@ -121,7 +142,7 @@ function BoxMove() {
         try {
           const transactionId = await fcl.mutate({
             cadence: `
-                  import StoneAge from 0x179b6b1cb6755e31
+                  import StoneAge from 0x9870d6da0661d8cf
                   transaction(plotID: UInt64, recipient: Address) {
                       let senderFarmRef :  &StoneAge.FarmDetail
                       let recipientFarmRef :  &StoneAge.FarmDetail
@@ -184,11 +205,14 @@ function BoxMove() {
         }
       };
 
-      window.getUserAccount = async (address) => {
+      window.getUserAccount = async () => {
         try {
+              const address = await fcl.currentUser.snapshot();
+
+
           const result = await fcl.query({
             cadence: `
-         import StoneAge from 0x179b6b1cb6755e31
+         import StoneAge from 0x9870d6da0661d8cf
 
           access(all) fun main(address: Address): &StoneAge.FarmDetail {
             let account = getAccount(address)
@@ -202,7 +226,7 @@ function BoxMove() {
           }
 
           `,
-            args: (arg, t) => [arg(address, t.Address)],
+            args: (arg, t) => [arg(address.addr, t.Address)],
           });
 
           // ✅ Use Unity's `sendMessage` to notify game
@@ -221,11 +245,14 @@ function BoxMove() {
       };
 
       window.getMyCollection = async () => {
+                  const currentUser = await fcl.currentUser.snapshot();
+                  console.log("Transaction ID:", transactionId);
+
         try {
           const result = await fcl.query({
             cadence: `
 
-              import StoneAge from 0x179b6b1cb6755e31
+              import StoneAge from 0x9870d6da0661d8cf
 
               access(all) fun main(address: Address): &StoneAge.PlotCollection {
                 let account = getAccount(address)
@@ -239,7 +266,7 @@ function BoxMove() {
               }
 
           `,
-            args: (arg, t) => [arg("0xf8d6e0586b0a20c7", t.Address)],
+            args: (arg, t) => [arg(currentUser.addr, t.Address)],
           });
 
           // ✅ Use Unity's `sendMessage` to notify game

@@ -12,6 +12,7 @@
 
 # flow
 emulator-account.pkey
+dunsin_testnet.pkey
 imports
 
 # testing
@@ -42,3 +43,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+dunsin_testnet.pkey
