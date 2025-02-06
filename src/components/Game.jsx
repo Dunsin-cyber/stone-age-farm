@@ -110,11 +110,7 @@ function BoxMove() {
           });
 
           console.log("Transaction ID:", transactionId);
-          sendMessage(
-            "Flow",
-            "OnTransactionSuccess",
-            "Plot minted successfully"
-          );
+          sendMessage("Flow", "OnMintPlotSuccess", "Plot minted successfully");
         } catch (error) {
           console.error("Transaction Error:", error);
           sendMessage("Flow", "OnTransactionFailure", error.message);
