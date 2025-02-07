@@ -3,6 +3,9 @@ import "./globals.css";
 import TelegramScript from "@/components/TelegramScript";
 import { Provider } from "@/components/ui/provider";
 import Script from "next/script";
+import "../../public/unityBridge"; // Ensures the functions are available globally
+// import UnityBridgeLoader from "@/components/UnityBridgeLoader";
+
 
 export const metadata: Metadata = {
   title: "StoneAge Farm",
@@ -19,12 +22,11 @@ export default function RootLayout({
       <Provider>
         <head>
           {/* Ensure this is inside the <head> for external scripts */}
-         
         </head>
         <body>
-          {/* Load Telegram WebApp Script */}
+          {/* Load Telegram WebApp Script */} 
+          {/* <UnityBridgeLoader /> */}
           <TelegramScript />
-
           {children}
         </body>
       </Provider>

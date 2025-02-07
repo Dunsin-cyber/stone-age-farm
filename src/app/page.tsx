@@ -6,6 +6,8 @@ import Navigation from "@/components/Navigation";
 import { Spinner } from "@chakra-ui/react"
 
 
+
+
 export default function Home() {
 
   // const router = useRouter();

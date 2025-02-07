@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaTasks } from "react-icons/fa";
 import { CiFlag1 } from "react-icons/ci";
 // import { useClient } from "@/context";
@@ -11,73 +11,40 @@ import { FaHotjar } from "react-icons/fa";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import {useRouter} from "next/navigation"
 import { Spinner } from "@chakra-ui/react"
+import * as fcl from "@onflow/fcl";
+
+// FCL Configuration
+fcl.config({
+  "flow.network": "testnet",
+  "app.detail.title": "Stone Age Farm",
+  "accessNode.api": "https://rest-testnet.onflow.org",
+  "discovery.wallet": "https://fcl-discovery.onflow.org/testnet/authn",
+  "app.detail.icon": "https://stone-age-farm.vercel.app/rsz_stone-age-logo.png",
+  // "accessNode.api": "http://localhost:8888",
+  // "discovery.wallet": "http://localhost:8701/fcl/authn", // Local Dev Wallet
+});
 
 
-function Campaigns() {
-  // const { signedAccountId } = useContext(NearContext);
-  //get user from redux, if user has campign, mark it as true.
-  //if completd, save the data on telegram storage
-  // const user = useAppSelector((state) => state.profile);
-  // const { getUser } = useGetUser();
-  // const { initContract } = useInitializeContract();
-
-  // const { isUserExist } = useIsUserExist();
-
-  // React.useEffect(() => {
-  //   // initContract();
-  //   getUser();
-  // }, [signedAccountId]);
-
-
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"
-    
-    script.async = true;
-    script.onload = () => {
-      if (typeof window !== "undefined" && window.Telegram) {
-     const tonConnectUI = new window.TON_CONNECT_UI.TonConnectUI({
-                manifestUrl: "https://stone-age-farm.vercel.app/tonconnect-manifest.json",
-                buttonRootId: "ton-connect"
-              });
-      }
-    };
-    document.head.appendChild(script);
-
-    // Cleanup script on unmount
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
-
-
-
-
-   async function connectToWallet() {
-       const tonConnectUI = new window.TON_CONNECT_UI.TonConnectUI({
-                manifestUrl: "https://stone-age-farm.vercel.app/tonconnect-manifest.json",
-                buttonRootId: "ton-connect"
-              });
-
-        const connectedWallet = await tonConnectUI.connectWallet();
-        // Do something with connectedWallet if needed
-        console.log(connectedWallet);
-    }
-
-    const handleConnect = async() => {
-
-      // Call the function
-     await connectToWallet().catch(error => {
-        console.error("Error connecting to wallet:", error);
-      });
-    }
-
+function Campaigns() { 
   const [clicked, setClicked] = React.useState(false)
+    const [count, setCount] = useState(0);
+  const [user, setUser] = useState({ loggedIn: false });
 
   const router = useRouter();
 
+    const Auth = () => {
+      if(user.loggedIn) {
+           fcl.unauthenticate();
+      } else {
+        fcl.authenticate();
+      }
+  };
+
   const toll = 2;
 
+useEffect(() => {
+    fcl.currentUser.subscribe(setUser);
+  }, []);
   return (
 
     <div>
@@ -100,11 +67,11 @@ function Campaigns() {
               {/* task */}
               <div
                 className="rounded-lg border border-blue-800 border-5 flex justify-between items-center py-3 px-5"
-                onClick={() => handleConnect()}
+                onClick={() => Auth()}
               >
                 <CiFlag1 color="white" />
                 <div>
-               <div id="ton-connect" ></div>
+               <div id="" >{user.loggedIn ? "Disconnect Wallet" :"connect wallet"}</div>
                 </div>
                 {toll < 1 ? (
                   <FaCheckCircle size={"30px"} color="green" />

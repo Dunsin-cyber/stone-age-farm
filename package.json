@@ -11,6 +11,7 @@
   "dependencies": {
     "@chakra-ui/react": "^3.2.0",
     "@emotion/react": "^11.13.5",
+    "@onflow/fcl": "^1.13.4",
     "@tonconnect/ui-react": "^2.0.9",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.17",
