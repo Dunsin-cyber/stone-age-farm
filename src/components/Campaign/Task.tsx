@@ -12,6 +12,8 @@ import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import {useRouter} from "next/navigation"
 import { Spinner } from "@chakra-ui/react"
 import * as fcl from "@onflow/fcl";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+
 
 // FCL Configuration
 fcl.config({
@@ -65,7 +67,10 @@ useEffect(() => {
           <div className="rounded-xl bg-gray-900 px-3 py-3 mt-3 z-10">
             <div className="space-y-6 mt-2">
               {/* task */}
-              <div
+              <div className="flex justify-center items-center">
+              <ConnectButton/>
+              </div>
+              {/* <div
                 className="rounded-lg border border-blue-800 border-5 flex justify-between items-center py-3 px-5"
                 onClick={() => Auth()}
               >
@@ -78,7 +83,7 @@ useEffect(() => {
                 ) : (
                   <h1 className="bg-white text-black rounded-full px-2"> Go</h1>
                 )}
-              </div>
+              </div> */}
               {/* set up your profile */}
               <div
                 onClick={() => {

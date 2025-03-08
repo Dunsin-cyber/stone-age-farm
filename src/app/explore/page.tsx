@@ -9,6 +9,7 @@ import Task from "@/components/Campaign/Task";
 import Campaigns from "@/components/Campaign/Campaigns";
 // import { useGetAllCampigns } from "@/functions";
 
+
 function Index() {
 //   const { getCampaigns } = useGetAllCampigns();
 

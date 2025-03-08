@@ -8,6 +8,8 @@ import {
   ProgressValueText,
 } from "@/components/ui/progress";
 // import flowJSON from "../../flow.json"
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { injected } from "wagmi/connectors";
 
 // FCL Configuration
 fcl
@@ -23,6 +25,23 @@ fcl
   })
 
 function BoxMove() {
+  const { address, isConnected } = useAccount();
+  const { connect } = useConnect({
+    connector: injected(),
+  });
+  const { disconnect } = useDisconnect();
+
+  const login = () => {
+    if (!isConnected) {
+      connect();
+    }
+  };
+
+  const logout = () => {
+    disconnect();
+  };
+
+
   const { unityProvider, isLoaded, loadingProgression, sendMessage } =
     useUnityContext({
       loaderUrl: "build/build.loader.js",
@@ -44,94 +63,37 @@ function BoxMove() {
 
       window.createAccount = async () => {
         try {
-          console.log("createAcc was called")
-          const transactionId = await fcl.mutate({
-            cadence: `
-            import StoneAge from 0x9870d6da0661d8cf
-            transaction {
-              prepare(acct: auth(BorrowValue, SaveValue, IssueStorageCapabilityController, PublishCapability) &Account) {
-                if acct.storage.borrow<&StoneAge.FarmDetail>(from: StoneAge.AccStoragePath) != nil {
-                  panic("This user has an account already!")
-                } else {
-                  let farmDetail <- StoneAge.CreateAccount()
-                  let collection <- StoneAge.createEmptyCollection()
-                  acct.storage.save(<-collection, to: StoneAge.CollectionStoragePath)
-                  let cap = acct.capabilities.storage.issue<&StoneAge.PlotCollection>(StoneAge.CollectionStoragePath)
-                  acct.capabilities.publish(cap, at: StoneAge.CollectionPublicPath)
-                  acct.storage.save(<-farmDetail, to: StoneAge.AccStoragePath)
-                  let capability = acct.capabilities.storage.issue<&StoneAge.FarmDetail>(StoneAge.AccStoragePath)
-                  acct.capabilities.publish(capability, at: /public/AccountNFTPath)
-                }
-              }
-            }
-            `,
-            proposer: fcl.authz,
-            payer: fcl.authz,
-            authorizations: [fcl.authz],
-            limit: 100,
-          });
-          const currentUser = await fcl.currentUser.snapshot();
-          console.log("Transaction ID:", transactionId);
+    
+          document.getElementById("wallet-connect-button")?.click();
+      //  login();
 
-          // ✅ Use Unity's `sendMessage` to notify game
-          // sendMessage("Flow", "OnCreateAccountSuccessful", currentUser.addr);
-          if (window.unityInstance) { 
-          window.unityInstance.SendMessage("Flow", "OnCreateAccountSuccessful", currentUser.addr);
+          if (window.unityInstance) {
+            window.unityInstance.SendMessage("Flow", "OnCreateAccountSuccessful", currentUser.addr);
           }
-           else {
-    console.error("Unity instance not found!");
-}
+          else {
+            console.error("Unity instance not found!");
+          }
         } catch (error) {
-            if (window.unityInstance) { 
-          console.error("Transaction Error:", error);
-                     window.unityInstance.SendMessage(
-                       "Flow",
-                       "OnTransactionFailure",
-                       error.message
-                     );
-                    }
- else {
-    console.error("Unity instance not found!");
-}
+          if (window.unityInstance) {
+            console.error("Transaction Error:", error);
+            window.unityInstance.SendMessage(
+              "Flow",
+              "OnTransactionFailure",
+              error.message
+            );
+          }
+          else {
+            console.error("Unity instance not found!");
+          }
           // sendMessage("Flow", "OnTransactionFailure", error.message);
         }
       };
 
       window.mintPlot = async () => {
         try {
-          const transactionId = await fcl.mutate({
-            cadence: `
-                  import StoneAge from 0x9870d6da0661d8cf
-                  transaction(seed: String, stage: String) {
-                      let signerRef: &StoneAge.PlotCollection
-                      let signerAccRef: &StoneAge.FarmDetail
-                      prepare(account: auth(BorrowValue) &Account) {
-                          self.signerRef = account.capabilities.borrow<&StoneAge.PlotCollection>(StoneAge.CollectionPublicPath)
-                          ?? panic(StoneAge.collectionNotConfiguredError(address: account.address))
-      
-                          self.signerAccRef = account.capabilities.borrow<&StoneAge.FarmDetail>(StoneAge.AccPublicPath)
-                          ?? panic("Could not borrow reference to recipient's FarmDetail")
-      
-                          if self.signerAccRef.balance < 500 {
-                              panic("Recipient does not have enough coins to purchase the plot.")
-                          }
-                      }
-                      execute {
-                          let newPlot <- StoneAge.mintPlot(seed: seed, stage: stage)
-                          self.signerAccRef.deductLandPurchaseCharge()
-                          self.signerRef.deposit(plot: <-newPlot)
-                      }
-                  }
-                  `,
-            args: (arg, t) => [arg("1", t.String), arg("1", t.String)],
-            proposer: fcl.authz,
-            payer: fcl.authz,
-            authorizations: [fcl.authz],
-            limit: 100,
-          });
+          document.getElementById("wallet-connect-button")?.click();
 
-          console.log("Transaction ID:", transactionId);
-          sendMessage("Flow", "OnMintPlotSuccess", "Plot minted successfully");
+      // sendMessage("Flow", "OnMintPlotSuccess", "Plot minted successfully");
         } catch (error) {
           console.error("Transaction Error:", error);
           sendMessage("Flow", "OnTransactionFailure", error.message);
@@ -140,60 +102,7 @@ function BoxMove() {
 
       window.transferPlot = async (plotID, recipient) => {
         try {
-          const transactionId = await fcl.mutate({
-            cadence: `
-                  import StoneAge from 0x9870d6da0661d8cf
-                  transaction(plotID: UInt64, recipient: Address) {
-                      let senderFarmRef :  &StoneAge.FarmDetail
-                      let recipientFarmRef :  &StoneAge.FarmDetail
-                      let recipientPlotRef : &StoneAge.PlotCollection
-      
-                      prepare(signer: auth(BorrowValue, SaveValue, IssueStorageCapabilityController, PublishCapability) &Account) {
-                          let senderPlotRef = signer.storage.borrow<auth(StoneAge.Withdraw) &StoneAge.PlotCollection>(from: StoneAge.CollectionStoragePath)
-                          ?? panic(StoneAge.collectionNotConfiguredError(address: signer.address))
-      
-                          let plotExist = senderPlotRef.idExists(id: plotID)
-                          if !plotExist {
-                              panic("Plot ID not found")
-                          }
-      
-                          let recipientAcct = getAccount(recipient)
-                          self.recipientPlotRef = recipientAcct.capabilities.borrow<&StoneAge.PlotCollection>(StoneAge.CollectionPublicPath)
-                          ?? panic(StoneAge.collectionNotConfiguredError(address: signer.address))
-      
-                          self.recipientFarmRef = recipientAcct.capabilities.borrow<&StoneAge.FarmDetail>(StoneAge.AccPublicPath)
-                          ?? panic("Could not borrow reference to recipient's FarmDetail")
-      
-                          self.senderFarmRef = signer.capabilities.borrow<&StoneAge.FarmDetail>(StoneAge.AccPublicPath)
-                          ?? panic("Could not borrow reference to recipient's FarmDetail")
-      
-                          if self.recipientFarmRef.balance < 500 {
-                              panic("Recipient does not have enough coins to purchase the plot.")
-                          }
-      
-                          self.recipientFarmRef.deductLandPurchaseCharge()
-                          self.senderFarmRef.addPurchaseCharges()
-      
-                          let transferPlot <- senderPlotRef.withdraw(withdrawID: plotID)
-                          self.recipientPlotRef.deposit(plot: <- transferPlot)
-                      }
-      
-                      execute {
-                          log("Plot transferred successfully, and 500 coins deducted from recipient.")
-                      }
-                  }
-                  `,
-            args: (arg, t) => [
-              arg(plotID, t.UInt64),
-              arg(recipient, t.Address),
-            ],
-            proposer: fcl.authz,
-            payer: fcl.authz,
-            authorizations: [fcl.authz],
-            limit: 100,
-          });
 
-          console.log("Transaction ID:", transactionId);
           sendMessage(
             "Flow",
             "OnTransactionSuccess",
@@ -207,34 +116,7 @@ function BoxMove() {
 
       window.getUserAccount = async () => {
         try {
-              const address = await fcl.currentUser.snapshot();
 
-
-          const result = await fcl.query({
-            cadence: `
-         import StoneAge from 0x9870d6da0661d8cf
-
-          access(all) fun main(address: Address): &StoneAge.FarmDetail {
-            let account = getAccount(address)
-
-            let nftReference = account
-              .capabilities
-              .borrow<&StoneAge.FarmDetail>(/public/AccountNFTPath)
-              ?? panic("Could not borrow a reference")  // Corrected string literal
-
-            return nftReference
-          }
-
-          `,
-            args: (arg, t) => [arg(address.addr, t.Address)],
-          });
-
-          // ✅ Use Unity's `sendMessage` to notify game
-          const param = {
-            balance: result.balance,
-            id: result.id,
-            uuid: result.uuid,
-          };
           sendMessage("Flow", "OnAccountData", param);
           console.log(result);
         } catch (error) {
@@ -245,38 +127,12 @@ function BoxMove() {
       };
 
       window.getMyCollection = async () => {
-                  const currentUser = await fcl.currentUser.snapshot();
-                  console.log("Transaction ID:", transactionId);
+        const currentUser = await fcl.currentUser.snapshot();
+        console.log("Transaction ID:", transactionId);
 
         try {
-          const result = await fcl.query({
-            cadence: `
-
-              import StoneAge from 0x9870d6da0661d8cf
-
-              access(all) fun main(address: Address): &StoneAge.PlotCollection {
-                let account = getAccount(address)
-
-                let collection = account
-                  .capabilities
-                  .borrow<&StoneAge.PlotCollection>(StoneAge.CollectionPublicPath)
-                  ?? panic("Could not borrow a reference")
-
-                  return collection
-              }
-
-          `,
-            args: (arg, t) => [arg(currentUser.addr, t.Address)],
-          });
-
-          // ✅ Use Unity's `sendMessage` to notify game
-          console.log(result.ownedPlots);
-          const param = {
-            // balance: result.balance,
-            // id: result.id,
-            // count: result.ownedPlots.length
-            uuid: result.uuid,
-          };
+         
+        
           sendMessage("Flow", "OnAccountData", param);
         } catch (error) {
           console.error("Transaction Error:", error);
@@ -304,6 +160,7 @@ function BoxMove() {
         style={{ width: "100%", height: "90%" }}
         unityProvider={unityProvider}
       />
+      <button id="wallet-connect-button" onClick={login} style={{ display: "none" }}>Connect</button>
     </div>
   );
 }
